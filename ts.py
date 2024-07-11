@@ -85,7 +85,7 @@ while(1):
 		print("Could not request results; {0}".format(e))
 		
 	except sr.UnknownValueError:
-
+		#saying something to the user when the program cant understand them or hear them
 		random_mp3_error = random.choice(errors)
 		file_path_for_error = os.path.join(folder_path, random_mp3_error)
 		pygame.mixer.music.load(file_path_for_error)
