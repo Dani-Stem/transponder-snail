@@ -1,54 +1,46 @@
-
-
+import os
+import pygame
 from playsound import playsound
 import speech_recognition as sr
 import pyttsx3 
 import random
 
+#organize and store the mp3 files
+pygame.mixer.init()
 
-#intial phone ring
-playsound('ring.mp3')
-r = sr.Recognizer() 
+folder_path = 'luffy_mp3s'
 
-#all the dialog/responses for the charaters and user
-user_greetings = ["hello", "hi", "greetings", "yo"]
+#greeting mp3s
+greetings = [file for file in os.listdir(folder_path) if file.startswith('greeting')]
+
+#error mp3s
+errors = [file for file in os.listdir(folder_path) if file.startswith('error')]
+
+#y mp3s
+y = [file for file in os.listdir(folder_path) if file.startswith('y')]
+
+#y responses mp3s
+y_responses = [file for file in os.listdir(folder_path) if file.startswith('y_response')]
+
+#starters  mp3s
+starters = [file for file in os.listdir(folder_path) if file.startswith('starter')]
+print(starters)
+
+#n responses  mp3s
+n_responses = [file for file in os.listdir(folder_path) if file.startswith('n_response')]
+
+#all potential dialog/responses for the user user
+user_greetings = ["hello", "hi", "whats up", "hey", "what's up"]
 user_y = ["yes", "yeah", "yea", "yup"]
 user_n = ["no", "nope", "nah"]
-characters = ["luffy", "robin", "choppa"]
-luffy_greetings = ["luffy: hi", "luffy: hello", "luffy: whats up"]
-luffy_error = ["luffy: i didnt hear that", "luffy: what did you say", "luffy: can you repeate that"]
-luffy_converstaion_ender = ["luffy: i have to go"]
-luffy_converstaion_starter = ["luffy: im gonna be king of the pirates", "luffy: the one piece is real", "luffy: im hungry", "luffy: talk to robin", "luffy: talk to choppa"]
-luffy_y_response = ["luffy: alright!", "luffy: awesome!", "luffy: lets go!"]
-luffy_n_response = ["luffy: why not", "luffy: thats dumb"]
-choppa_greetings = ["choppa: hi", "choppa: hello", "choppa: whats up"]
-choppa_y_response = ["choppa: alright!", "choppa: awesome!", "choppa: lets go!"]
-choppa_error = ["choppa: i didnt hear that", "choppa: what did you say", "choppa: can you repeate that"]
-choppa_converstaion_ender = ["choppa: i have to go, bye"]
-choppa_converstaion_starter = ["choppa: i will be able to cure any dease", "choppa: i found some ingredients for medicine", "choppa: talk to luffy, i have to go", "choppa: talk to robin, i have to go"]
-choppa_n_response = ["choppa: why not", "choppa: thats dumb"]
-robin_greetings = ["robin: hi", "robin: hello", "robin: whats up"]
-robin_error = ["robin: i didnt hear that", "robin: what did you say", "robin: can you repeate that"]
-robin_converstaion_ender = ["robin: i have to go, bye"]
-robin_converstaion_starter = ["robin: i can read the poneglyphs", "robin: im so grateful to have found friends", "robin: talk to luffy, i have to go", "robin: talk to robin, i have to go"]
-robin_y_response = ["robin: alright!", "robin: awesome!", "robin: lets go!"]
-robin_n_response = ["robin: why not", "robin: thats dumb"]
 
-#starting the converstaion by randomly selection a character to answer the phone and greet the user.
-charater_speaking = random.choice(characters)
-print(charater_speaking)
-if charater_speaking == "luffy":
-	charater_response = random.choice(luffy_greetings)
-	print(charater_response)
-elif charater_speaking == "choppa":
-	charater_response = random.choice(choppa_greetings)
-	print(charater_response)
-else:
-	charater_response = random.choice(robin_greetings)
-	print(charater_response)
+#intial phone ring
+# playsound('ring.mp3')
+playsound("luffy_mp3s/greeting_hey.mp3")
+r = sr.Recognizer() 
 
 
-#starts listening here
+#speech recognition starts listening here
 while(1): 
 	
 	try:
@@ -64,62 +56,38 @@ while(1):
 			
 			# greeting the user
 			if MyText in user_greetings:
-				if charater_speaking == "luffy":
-					charater_response = random.choice(luffy_greetings)
-				elif charater_speaking == "choppa":
-					charater_response = random.choice(choppa_greetings)
-				else:
-					charater_response = random.choice(robin_greetings)
-
-				print(charater_response)
+				random_mp3_starter = random.choice(starters)
+				file_path_for_starter = os.path.join(folder_path, random_mp3_starter)
+				pygame.mixer.music.load(file_path_for_starter)
+				print(file_path_for_starter)
+				playsound(file_path_for_starter)
 
 			# repsoning to the user when they say yes or something similar
 			if MyText in user_y:
-				if charater_speaking == "luffy":
-					charater_response = random.choice(luffy_y_response)
-				elif charater_speaking == "choppa":
-					charater_response = random.choice(choppa_y_response)
-				else:
-					charater_response = random.choice(robin_y_response)
+				random_mp3_y_response = random.choice(y_responses)
+				file_path_for_y_response = os.path.join(folder_path, random_mp3_y_response)
+				pygame.mixer.music.load(file_path_for_y_response)
+				print(file_path_for_y_response)
+				playsound(file_path_for_y_response)
 
-				print(charater_response)
-
-			# repsoning to the user when they say no or something similar
+			# repsponding to the user when they say no or something similar
 			if MyText in user_n:
-				if charater_speaking == "luffy":
-					charater_response = random.choice(luffy_n_response)
-				elif charater_speaking == "choppa":
-					charater_response = random.choice(choppa_n_response)
-				else:
-					charater_response = random.choice(robin_n_response)
+				random_mp3_n_response = random.choice(n_responses)
+				file_path_for_n_response = os.path.join(folder_path, random_mp3_n_response)
+				pygame.mixer.music.load(file_path_for_n_response)
+				print(file_path_for_n_response)
+				playsound(file_path_for_n_response)
 
-				print(charater_response)
 
-			# if the user wants to talk to a different charater
-			if "to chopper" in MyText:
-				charater_response = random.choice(choppa_greetings)
-				charater_speaking = "choppa"
-				print(charater_response)
-
-			if "to robin" in MyText:
-				charater_response = random.choice(robin_greetings)
-				charater_speaking = "robin"
-				print(charater_response)
-
-			if "to luffy" in MyText:
-				charater_response = random.choice(luffy_greetings)
-				charater_speaking = "luffy"
-				print(charater_response)
 						
 
 	except sr.RequestError as e:
 		print("Could not request results; {0}".format(e))
 		
-	except sr.UnknownValueError:				
-		if charater_speaking == "luffy":
-			charater_response = random.choice(luffy_error)
-		elif charater_speaking == "choppa":
-			charater_response = random.choice(choppa_error)
-		else:
-			charater_response = random.choice(robin_error)
-		print(charater_response)
+	except sr.UnknownValueError:
+
+		random_mp3_error = random.choice(errors)
+		file_path_for_error = os.path.join(folder_path, random_mp3_error)
+		pygame.mixer.music.load(file_path_for_error)
+		print(file_path_for_error)
+		playsound(file_path_for_error)
