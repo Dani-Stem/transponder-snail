@@ -2,8 +2,11 @@ import os
 import pygame
 from playsound import playsound
 import speech_recognition as sr
-import pyttsx3 
+import serial
 import random
+
+
+ser = serial.Serial('/dev/cu.usbmodem14201')
 
 #organize and store the mp3 files
 pygame.mixer.init()
@@ -60,7 +63,13 @@ while(1):
 				file_path_for_starter = os.path.join(folder_path, random_mp3_starter)
 				pygame.mixer.music.load(file_path_for_starter)
 				print(file_path_for_starter)
+				ser.write(b'1')
+				print(ser.name)
+
+				print("arduino start")
 				playsound(file_path_for_starter)
+				ser.write(b'0')
+				print("arduino stop")
 
 			# repsoning to the user when they say yes or something similar
 			if MyText in user_y:
