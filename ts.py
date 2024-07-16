@@ -4,6 +4,10 @@ from playsound import playsound
 import speech_recognition as sr
 import serial
 import random
+import time
+
+start_time = time.perf_counter()
+
 
 #function for checking the user input to the predicited user inputs
 def check_for_match(input: str, match_list: list) -> bool:
@@ -19,9 +23,10 @@ user_y = ["yes", "yeah", "yea", "yup"]
 user_n = ["no", "nope", "nah"]
 user_hungry = ["food", "eat", "hunger", "hungry", "starving", "eating", "ate"]
 user_what = ["what", "whats", "what's"]
+user_question = ["are", "is"]
 
 #connecting to the arduino
-ser = serial.Serial('/dev/cu.usbmodem14201')
+# ser = serial.Serial('/dev/cu.usbmodem14201')
 
 #organize and store the mp3 files
 pygame.mixer.init()
@@ -36,6 +41,9 @@ errors = [file for file in os.listdir(folder_path) if file.startswith('error')]
 
 #y mp3s
 y = [file for file in os.listdir(folder_path) if file.startswith('y')]
+
+#n mp3s
+n = [file for file in os.listdir(folder_path) if file.startswith('n')]
 
 #y responses mp3s
 y_responses = [file for file in os.listdir(folder_path) if file.startswith('y_response')]
@@ -58,11 +66,46 @@ hungry = [file for file in os.listdir(folder_path) if file.startswith('hungry')]
 #what responses  mp3s
 what = [file for file in os.listdir(folder_path) if file.startswith('what')]
 
+#thankyou responses  mp3s
+ty_response = [file for file in os.listdir(folder_path) if file.startswith('ty_response')]
+
+#luffy singing  mp3s
+song = [file for file in os.listdir(folder_path) if file.startswith('song')]
+
+#when luffy is mad  mp3s
+mad = [file for file in os.listdir(folder_path) if file.startswith('mad')]
+
+#you cant responses  mp3s
+you_cant_response = [file for file in os.listdir(folder_path) if file.startswith('you_cant_response')]
+
+#when the user says idk responses  mp3s
+useridk = [file for file in os.listdir(folder_path) if file.startswith('useridk_response')]
+
+
+#convo enders  mp3s
+enders = [file for file in os.listdir(folder_path) if file.startswith('enders')]
 
 #intial phone ring
 # playsound('ring.mp3')
 playsound("luffy_mp3s/greeting_hey.mp3")
-r = sr.Recognizer() 
+r = sr.Recognizer()
+
+# luffy starts a convo after 5 secons of silence
+def convo_starter():
+	print("match starter")
+	random_mp3_starter = random.choice(starters)
+	file_path_for_starter = os.path.join(folder_path, random_mp3_starter)
+	pygame.mixer.music.load(file_path_for_starter)
+	print(file_path_for_starter)
+
+	# ser.write(b'1')
+	# print(ser.name)
+	# print("arduino start")
+
+	playsound(file_path_for_starter)
+
+	# ser.write(b'0')
+	# print("arduino stop")
 
 
 #speech recognition starts listening here
@@ -92,15 +135,20 @@ while(1):
 				pygame.mixer.music.load(file_path_for_starter)
 				print(file_path_for_starter)
 				#sends the signal to the arduino to start the motor
-				ser.write(b'1')
-				print(ser.name)
-				print("arduino start")
+				# ser.write(b'1')
+				# print(ser.name)
+				# print("arduino start")
 
 				playsound(file_path_for_starter)
 
 				#sends the signal to the arduino to stop the motor
-				ser.write(b'0')
-				print("arduino stop")
+				# ser.write(b'0')
+				# print("arduino stop")
+
+				# luffy starts a convo after 5 seconds of silence
+				last_time_luffy_spoke = time.perf_counter()
+				if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+					convo_starter()
 
 			# repsoning to the user when they say yes or something similar
 			if check_for_match(MyText, user_y):
@@ -110,14 +158,19 @@ while(1):
 				pygame.mixer.music.load(file_path_for_y_response)
 				print(file_path_for_y_response)
 
-				ser.write(b'1')
-				print(ser.name)
-				print("arduino start")
+				# ser.write(b'1')
+				# print(ser.name)
+				# print("arduino start")
 
 				playsound(file_path_for_y_response)
 
-				ser.write(b'0')
-				print("arduino stop")
+				# ser.write(b'0')
+				# print("arduino stop")
+
+				# luffy starts a convo after 5 seconds of silence
+				last_time_luffy_spoke = time.perf_counter()
+				if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+					convo_starter()
 
 			# repsponding to the user when they say no or something similar
 			if check_for_match(MyText, user_n):
@@ -127,14 +180,19 @@ while(1):
 				pygame.mixer.music.load(file_path_for_n_response)
 				print(file_path_for_n_response)
 
-				ser.write(b'1')
-				print(ser.name)
-				print("arduino start")
+				# ser.write(b'1')
+				# print(ser.name)
+				# print("arduino start")
 
 				playsound(file_path_for_n_response)
 
-				ser.write(b'0')
-				print("arduino stop")
+				# ser.write(b'0')
+				# print("arduino stop")
+
+				# luffy starts a convo after 5 seconds of silence
+				last_time_luffy_spoke = time.perf_counter()
+				if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+					convo_starter()
 
 				# responding to the user when they say something pertaining to food or hunger.
 				if check_for_match(MyText, user_hungry):
@@ -144,14 +202,19 @@ while(1):
 					pygame.mixer.music.load(file_path_for_hungry)
 					print(file_path_for_hungry)
 
-					ser.write(b'1')
-					print(ser.name)
-					print("arduino start")
+					# ser.write(b'1')
+					# print(ser.name)
+					# print("arduino start")
 
 					playsound(file_path_for_hungry)
 
-					ser.write(b'0')
-					print("arduino stop")
+					# ser.write(b'0')
+					# print("arduino stop")
+
+					# luffy starts a convo after 5 seconds of silence
+					last_time_luffy_spoke = time.perf_counter()
+					if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+						convo_starter()
 
 				# responding to the user if they say what.
 				if check_for_match(MyText, user_what):
@@ -161,14 +224,19 @@ while(1):
 					pygame.mixer.music.load(file_path_for_what)
 					print(file_path_for_what)
 
-					ser.write(b'1')
-					print(ser.name)
-					print("arduino start")
+					# ser.write(b'1')
+					# print(ser.name)
+					# print("arduino start")
 
 					playsound(file_path_for_what)
 
-					ser.write(b'0')
-					print("arduino stop")
+					# ser.write(b'0')
+					# print("arduino stop")
+
+					# luffy starts a convo after 5 seconds of silence
+					last_time_luffy_spoke = time.perf_counter()
+					if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+						convo_starter()
 
 				# responding to the user if they say something luffy cant understand.
 				if (MyText not in user_greetings) or (MyText not in user_n) or (MyText not in user_hungry) or (MyText not in user_what) or (MyText not in user_y):
@@ -178,14 +246,43 @@ while(1):
 					pygame.mixer.music.load(file_path_for_idk)
 					print(file_path_for_idk)
 
-					ser.write(b'1')
-					print(ser.name)
-					print("arduino start")
+					# ser.write(b'1')
+					# print(ser.name)
+					# print("arduino start")
 
 					playsound(file_path_for_idk)
 
-					ser.write(b'0')
-					print("arduino stop")
+					# ser.write(b'0')
+					# print("arduino stop")
+
+					# luffy starts a convo after 5 seconds of silence
+					last_time_luffy_spoke = time.perf_counter()
+					if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+						convo_starter()
+
+				# responding to the user if they ask a yes or n question.
+				if MyText in user_question:
+					print("match question")
+					random_mp3_question = random.choice(y + n)
+					file_path_for_question = os.path.join(folder_path, random_mp3_question)
+					pygame.mixer.music.load(file_path_for_question)
+					print(file_path_for_question)
+
+					# ser.write(b'1')
+					# print(ser.name)
+					# print("arduino start")
+
+					playsound(file_path_for_question)
+
+					# ser.write(b'0')
+					# print("arduino stop")
+
+
+					#luffy starts a convo after 5 secons of silence
+					last_time_luffy_spoke = time.perf_counter()
+					if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+						convo_starter()
+
 						
 
 	except sr.RequestError as e:
@@ -199,11 +296,16 @@ while(1):
 		pygame.mixer.music.load(file_path_for_error)
 		print(file_path_for_error)
 
-		ser.write(b'1')
-		print(ser.name)
-		print("arduino start")
+		# ser.write(b'1')
+		# print(ser.name)
+		# print("arduino start")
 
 		playsound(file_path_for_error)
 
-		ser.write(b'0')
-		print("arduino stop")
+		# ser.write(b'0')
+		# print("arduino stop")
+
+		# luffy starts a convo after 5 seconds of silence
+		last_time_luffy_spoke = time.perf_counter()
+		if last_time_luffy_spoke + 5 <= last_time_luffy_spoke:
+			convo_starter()
