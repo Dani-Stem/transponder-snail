@@ -82,7 +82,7 @@ bye = [file for file in os.listdir(folder_path) if file.startswith('bye')]
 
 r = sr.Recognizer()
 
-# luffy starts a convo after 5 seconds of silence
+# luffy starts a convo 
 def convo_starter():
 	print("match starter")
 	random_mp3_starter = random.choice(starters)
@@ -96,6 +96,7 @@ def convo_starter():
 	# ser.write(b'0')
 	# print("arduino stop")
 
+#luffy ends the convo
 def convo_over():
 	print("match bye")
 	# combining secondary greetings and convo starters as both potential responses.
@@ -113,6 +114,7 @@ def convo_over():
 	# print("arduino stop")
 	quit()
 
+#luffy starts or ends the convo
 def convo_both():
 	print("match starter or enders")
 	random_mp3_next = random.choice(starters + enders)
@@ -125,16 +127,14 @@ def convo_both():
 	playsound(file_path_for_next)
 	# ser.write(b'0')
 	# print("arduino stop")
-
+	#theres a 1 in 4 chance that if these sound clips play luffy end the convo and hand up
 	x = random.randint(1, 4)
-
 	if (file_path_for_next == "luffy_mp3s/ender_ithinkivedonemorethanenoughdancingaroundforoneday.mp3"):
 		if x == 1:
 			convo_over()
 	elif (file_path_for_next == "luffy_mp3s/ender_wellthen.mp3"):
 		if x == 1:
 			convo_over()
-
 
 
 # intial phone ring
@@ -149,6 +149,7 @@ while(1):
 		#turing what it hears into text
 		with sr.Microphone() as source2:
 			r.adjust_for_ambient_noise(source2, duration=0.1)
+			#timers for convo functions
 			t = Timer(7, convo_starter)
 			t1 = Timer(5, convo_over)
 			t2 = Timer(7, convo_both)
@@ -156,9 +157,11 @@ while(1):
 			audio2 = r.listen(source2)
 			MyText_nosplit = r.recognize_google(audio2)
 			MyText_nosplit = MyText_nosplit.lower()
+			#if the user speaks and breaks the silence cancel the timers for the convo functions
 			t2.cancel()
 			t1.cancel()
 			t.cancel()
+			#displays what the user is saying 
 			print("user input: ", MyText_nosplit)
 			MyText = MyText_nosplit.split()
 			print(MyText)
@@ -175,9 +178,7 @@ while(1):
 				# ser.write(b'1')
 				# print(ser.name)
 				# print("arduino start")
-
 				playsound(file_path_for_starter)
-
 				#sends the signal to the arduino to stop the motor
 				# ser.write(b'0')
 				# print("arduino stop")
@@ -276,7 +277,6 @@ while(1):
 				file_path_for_mad = os.path.join(folder_path, random_mp3_mad)
 				pygame.mixer.music.load(file_path_for_mad)
 				print(file_path_for_mad)
-
 				# ser.write(b'1')
 				# print(ser.name)
 				# print("arduino start")
@@ -291,7 +291,6 @@ while(1):
 				file_path_for_do = os.path.join(folder_path, random_mp3_do)
 				pygame.mixer.music.load(file_path_for_do)
 				print(file_path_for_do)
-
 				# ser.write(b'1')
 				# print(ser.name)
 				# print("arduino start")
@@ -299,7 +298,7 @@ while(1):
 				# ser.write(b'0')
 				# print("arduino stop")
 
-				# starts a new convo or ends the convo
+				# starts the timer a new convo or ends the convo if there is silence
 				t2.start()
 
 			# saying bye to the user
@@ -322,10 +321,10 @@ while(1):
 				#sends the signal to the arduino to stop the motor
 				# ser.write(b'0')
 				# print("arduino stop")
+				#starting the timer for a convo if there is silence
 				t1.start()
-
+				# if these sounds clips are played there is a 1 out of 3 chance that luffy will end the convo and hang up
 				x = random.randint(1, 3)
-
 				if (file_path_for_ender == "luffy_mp3s/ender_ithinkivedonemorethanenoughdancingaroundforoneday.mp3"):
 					if x == 1:
 						convo_over()
