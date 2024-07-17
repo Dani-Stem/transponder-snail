@@ -183,9 +183,6 @@ while(1):
 				# ser.write(b'0')
 				# print("arduino stop")
 
-				# luffy starts a convo after 5 seconds of silence
-
-
 			# repsoning to the user when they say yes or something similar
 			elif check_for_match(MyText, user_y):
 				print("match y")
