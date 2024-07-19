@@ -32,6 +32,7 @@ user_what = ["what", "whats", "what's"]
 user_question = ["are", "is", "do", "don't"]
 user_question1 = ["who", "when", "where", "why", "how"]
 user_bye = ["bye", "goodbye"]
+user_ty = ["thanks", "thank"]
 
 all_lists = (user_greetings + user_y + user_n + user_hungry + user_what + user_question + user_question1 + user_bye)
 
@@ -112,6 +113,7 @@ def convo_over():
 	# sends the signal to the arduino to stop the motor
 	ser.write(b'0')
 	print("arduino stop")
+	playsound("click.mp3")
 	quit()
 
 #luffy starts or ends the convo
@@ -138,12 +140,12 @@ def convo_both():
 
 
 # intial phone ring
-ser.write(b'1')
-print(ser.name)
-print("arduino start")
-playsound('ring.mp3')
-ser.write(b'0')
-print("arduino stop")
+# ser.write(b'1')
+# print(ser.name)
+# print("arduino start")
+# playsound('ring.mp3')
+# ser.write(b'0')
+# print("arduino stop")
 
 # intial phone ring
 ser.write(b'1')
@@ -152,6 +154,8 @@ print("arduino start")
 playsound('ring.mp3')
 ser.write(b'0')
 print("arduino stop")
+
+playsound("click.mp3")
 
 # luffy answering the phone
 ser.write(b'1')
@@ -203,7 +207,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# repsoning to the user when they say yes or something similar
+			#repsoning to the user when they say yes or something similar
 			elif check_for_match(MyText, user_y):
 				print("match y")
 				random_mp3_y_response = random.choice(y_responses)
@@ -217,7 +221,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# repsponding to the user when they say no or something similar
+			#repsponding to the user when they say no or something similar
 			elif check_for_match(MyText, user_n):
 				print("match n")
 				random_mp3_n_response = random.choice(n_responses)
@@ -231,7 +235,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# responding to the user when they say something pertaining to food or hunger.
+			#responding to the user when they say something pertaining to food or hunger.
 			elif check_for_match(MyText, user_hungry):
 				print("match hungry")
 				random_mp3_hungry = random.choice(hungry)
@@ -245,7 +249,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# responding to the user if they say what.
+			#responding to the user if they say what.
 			elif check_for_match(MyText, user_what):
 				print("match what")
 				random_mp3_what = random.choice(what + idk)
@@ -259,7 +263,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# responding to the user if they ask a yes or n question.
+			#responding to the user if they ask a yes or n question.
 			elif check_for_match(MyText, user_question):
 				print("match question")
 				random_mp3_question = random.choice(y + n + idk)
@@ -273,7 +277,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			# responding to the user if they ask a yes or n question.
+			#responding to the user if they ask a yes or n question.
 			elif check_for_match(MyText, user_question1):
 				print("match question1")
 				random_mp3_question1 = random.choice(idk)
@@ -287,9 +291,23 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
+			#responding to the user if they say ty.
+			elif check_for_match(MyText, user_ty):
+				print("match ty")
+				random_mp3_ty = random.choice(ty_response)
+				file_path_for_ty = os.path.join(folder_path, random_mp3_ty)
+				pygame.mixer.music.load(file_path_for_ty)
+				print(file_path_for_ty)
+				ser.write(b'1')
+				print(ser.name)
+				print("arduino start")
+				playsound(file_path_for_ty)
+				ser.write(b'0')
+				print("arduino stop")
 
-			# responding to the user if they say idk.
-			elif MyText.startswith("i don't know"):
+
+			#responding to the user if they say idk.
+			elif MyText_nosplit.startswith("i don't know"):
 				print("match user idk")
 				random_mp3_useridk = random.choice(useridk)
 				file_path_for_useridk = os.path.join(folder_path, random_mp3_useridk)
