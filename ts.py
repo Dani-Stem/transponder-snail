@@ -27,12 +27,13 @@ def check_for_no_match(input: str, match_list: list) -> bool:
 user_greetings = ["hello", "hi", "hey", "hay"]
 user_y = ["yes", "yeah", "yea", "yup", "yep"]
 user_n = ["no", "nope", "nah"]
-user_hungry = ["food", "eat", "hunger", "hungry", "starving", "eating", "ate"]
+user_hungry = ["food", "eat", "hunger", "hungry", "starving", "eating", "ate", "meat"]
 user_what = ["what", "whats", "what's"]
 user_question = ["are", "is", "do", "don't"]
 user_question1 = ["who", "when", "where", "why", "how"]
 user_bye = ["bye", "goodbye"]
 user_ty = ["thanks", "thank"]
+user_sleep = ["sleep", "sleeping"]
 
 all_lists = (user_greetings + user_y + user_n + user_hungry + user_what + user_question + user_question1 + user_bye)
 
@@ -49,9 +50,9 @@ greetings = [file for file in os.listdir(folder_path) if file.startswith('greeti
 #error mp3s
 errors = [file for file in os.listdir(folder_path) if file.startswith('error')]
 #y mp3s
-y = [file for file in os.listdir(folder_path) if file.startswith('y')]
+y = [file for file in os.listdir(folder_path) if file.startswith('yes')]
 #n mp3s
-n = [file for file in os.listdir(folder_path) if file.startswith('n')]
+n = [file for file in os.listdir(folder_path) if file.startswith('no')]
 #y responses mp3s
 y_responses = [file for file in os.listdir(folder_path) if file.startswith('y_response')]
 #starters  mp3s
@@ -80,13 +81,15 @@ useridk = [file for file in os.listdir(folder_path) if file.startswith('useridk_
 enders = [file for file in os.listdir(folder_path) if file.startswith('ender')]
 #when lufyy is saying bye  mp3s
 bye = [file for file in os.listdir(folder_path) if file.startswith('bye')]
+#when lufyy is saying fillers
+fillers = [file for file in os.listdir(folder_path) if file.startswith('filler')]
 
 r = sr.Recognizer()
 
 # luffy starts a convo
 def convo_starter():
 	print("match starter")
-	random_mp3_starter = random.choice(starters)
+	random_mp3_starter = random.choice(starters + song)
 	file_path_for_starter = os.path.join(folder_path, random_mp3_starter)
 	pygame.mixer.music.load(file_path_for_starter)
 	print(file_path_for_starter)
@@ -131,10 +134,7 @@ def convo_both():
 	print("arduino stop")
 	#theres a 1 in 4 chance that if these sound clips play luffy end the convo and hand up
 	x = random.randint(1, 4)
-	if (file_path_for_next == "luffy_mp3s/ender_ithinkivedonemorethanenoughdancingaroundforoneday.mp3"):
-		if x == 1:
-			convo_over()
-	elif (file_path_for_next == "luffy_mp3s/ender_wellthen.mp3"):
+	if file_path_for_next.startswith("ender"):
 		if x == 1:
 			convo_over()
 
@@ -210,7 +210,7 @@ while(1):
 			#repsoning to the user when they say yes or something similar
 			elif check_for_match(MyText, user_y):
 				print("match y")
-				random_mp3_y_response = random.choice(y_responses)
+				random_mp3_y_response = random.choice(y_responses + song)
 				file_path_for_y_response = os.path.join(folder_path, random_mp3_y_response)
 				pygame.mixer.music.load(file_path_for_y_response)
 				print(file_path_for_y_response)
@@ -340,9 +340,9 @@ while(1):
 
 			#starting convo ender
 			elif check_for_no_match(MyText, all_lists):
-				print("match ender")
+				print("match ender or filler")
 				#combining secondary greetings and convo starters as both potential responses.
-				random_mp3_ender = random.choice(enders)
+				random_mp3_ender = random.choice(fillers + enders + fillers)
 				file_path_for_ender = os.path.join(folder_path, random_mp3_ender)
 				pygame.mixer.music.load(file_path_for_ender)
 				print(file_path_for_ender)
@@ -358,10 +358,7 @@ while(1):
 				t1.start()
 				# if these sounds clips are played there is a 1 out of 3 chance that luffy will end the convo and hang up
 				x = random.randint(1, 3)
-				if (file_path_for_ender == "luffy_mp3s/ender_ithinkivedonemorethanenoughdancingaroundforoneday.mp3"):
-					if x == 1:
-						convo_over()
-				elif (file_path_for_ender == "luffy_mp3s/ender_wellthen.mp3"):
+				if file_path_for_ender.startswith("ender"):
 					if x == 1:
 						convo_over()
 
