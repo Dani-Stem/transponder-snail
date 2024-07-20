@@ -28,14 +28,13 @@ user_greetings = ["hello", "hi", "hey", "hay"]
 user_y = ["yes", "yeah", "yea", "yup", "yep"]
 user_n = ["no", "nope", "nah"]
 user_hungry = ["food", "eat", "hunger", "hungry", "starving", "eating", "ate", "meat"]
-user_what = ["what", "whats", "what's"]
 user_question = ["are", "is", "do", "don't"]
 user_question1 = ["who", "when", "where", "why", "how"]
 user_bye = ["bye", "goodbye"]
 user_ty = ["thanks", "thank"]
 user_sleep = ["sleep", "sleeping"]
 
-all_lists = (user_greetings + user_y + user_n + user_hungry + user_what + user_question + user_question1 + user_bye)
+all_lists = (user_greetings + user_y + user_n + user_hungry + user_question + user_question1 + user_bye)
 
 #connecting to the arduino
 ser = serial.Serial('/dev/cu.usbmodem14201')
@@ -75,6 +74,8 @@ song = [file for file in os.listdir(folder_path) if file.startswith('song')]
 mad = [file for file in os.listdir(folder_path) if file.startswith('mad')]
 #you cant responses  mp3s
 you_cant_response = [file for file in os.listdir(folder_path) if file.startswith('you_cant_response')]
+#canyou responses  mp3s
+canyou = [file for file in os.listdir(folder_path) if file.startswith('canyou')]
 #when the user says idk responses  mp3s
 useridk = [file for file in os.listdir(folder_path) if file.startswith('useridk_response')]
 #convo enders  mp3s
@@ -83,6 +84,8 @@ enders = [file for file in os.listdir(folder_path) if file.startswith('ender')]
 bye = [file for file in os.listdir(folder_path) if file.startswith('bye')]
 #when lufyy is saying fillers
 fillers = [file for file in os.listdir(folder_path) if file.startswith('filler')]
+#when lufyy is talking island
+whatsup = [file for file in os.listdir(folder_path) if file.startswith('whatsup')]
 
 r = sr.Recognizer()
 
@@ -249,10 +252,10 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			#responding to the user if they say what.
-			elif check_for_match(MyText, user_what):
-				print("match what")
-				random_mp3_what = random.choice(what + idk)
+			#responding to the user if they say what's up.
+			elif ("what's up" in MyText_nosplit) or ("what is up" in MyText_nosplit):
+				print("match what's up response")
+				random_mp3_what = random.choice(whatsup)
 				file_path_for_what = os.path.join(folder_path, random_mp3_what)
 				pygame.mixer.music.load(file_path_for_what)
 				print(file_path_for_what)
@@ -263,7 +266,7 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			#responding to the user if they ask a yes or n question.
+			#responding to the user if they ask a question starting w is are do dont.
 			elif check_for_match(MyText, user_question):
 				print("match question")
 				random_mp3_question = random.choice(y + n + idk)
@@ -277,8 +280,8 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
-			#responding to the user if they ask a yes or n question.
-			elif check_for_match(MyText, user_question1):
+			#responding to the user if they ask a question that starts w who what when why how.
+			elif (check_for_match(MyText, user_question1)) and (("what's up" not in MyText_nosplit) or ("what is up"  not in MyText_nosplit)):
 				print("match question1")
 				random_mp3_question1 = random.choice(idk)
 				file_path_for_question1 = os.path.join(folder_path, random_mp3_question1)
@@ -334,6 +337,21 @@ while(1):
 				ser.write(b'0')
 				print("arduino stop")
 
+
+			#responding to the user if they ask luffy to do something.
+			elif ("can you" in MyText_nosplit) or ("will you" in MyText_nosplit):
+				print("match can you")
+				random_mp3_canyou = random.choice(canyou + y + n)
+				file_path_for_canyou= os.path.join(folder_path, random_mp3_canyou)
+				pygame.mixer.music.load(file_path_for_canyou)
+				print(file_path_for_canyou)
+				ser.write(b'1')
+				print(ser.name)
+				print("arduino start")
+				playsound(file_path_for_canyou)
+				ser.write(b'0')
+				print("arduino stop")
+
 			# saying bye to the user
 			elif check_for_match(MyText, user_bye):
 				convo_over()
@@ -342,7 +360,7 @@ while(1):
 			elif check_for_no_match(MyText, all_lists):
 				print("match ender or filler")
 				#combining secondary greetings and convo starters as both potential responses.
-				random_mp3_ender = random.choice(fillers + enders + fillers)
+				random_mp3_ender = random.choice(fillers + enders)
 				file_path_for_ender = os.path.join(folder_path, random_mp3_ender)
 				pygame.mixer.music.load(file_path_for_ender)
 				print(file_path_for_ender)
@@ -357,10 +375,10 @@ while(1):
 				#starting the timer for a convo if there is silence
 				t1.start()
 				# if these sounds clips are played there is a 1 out of 3 chance that luffy will end the convo and hang up
-				x = random.randint(1, 3)
-				if file_path_for_ender.startswith("ender"):
-					if x == 1:
-						convo_over()
+				# x = random.randint(1, 2)
+				if file_path_for_ender.startswith("luffy_mp3s/ender"):
+					# if x == 1:
+					convo_over()
 
 	except sr.RequestError as e:
 		print("Could not request results; {0}".format(e))
